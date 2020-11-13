@@ -5,9 +5,4 @@ class PerfilSerializer(serializers.ModelSerializer):
   foto = serializers.ImageField(required=False)
   class Meta:
     model = Perfil
-    fields = (
-      'foto',
-      'telefono',
-      'direccion',
-      'tipo',
-    )
+    fields = '__all__'
