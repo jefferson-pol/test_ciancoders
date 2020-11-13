@@ -1,0 +1,29 @@
+{
+  "name": "testcian",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "connected-react-router": "^6.8.0",
+    "emojione": "^4.5.0",
+    "history": "^4.10.0",
+    "material-ui": "^0.19.4",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-modal": "^3.11.2",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "1.0.14",
+    "react-transition-group": "^2.2.0",
+    "redux": "^4.0.5",
+    "redux-localstorage": "^0.4.1",
+    "redux-thunk": "^2.3.0",
+    "sweetalert2": "^9.15.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
