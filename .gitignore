@@ -1,0 +1,17 @@
+/vendor/
+/bower_components/
+/node_modules/
+/.idea
+/docroot/
+/build/
+.DS_Store
+npm-debug.log
+.eslintcache
+/.env
+*.pyc
+.idea/
+local_settings.py
+db.sqlite3
+.vscode/
+/media_devel/
+cybs.log

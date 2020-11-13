@@ -1,0 +1,9 @@
+ADMINISTRADOR = 5
+VENDEDOR = 10
+CLIENTE = 15
+
+TIPOS_USUARIO = (
+  (ADMINISTRADOR,'Administrador'),
+  (VENDEDOR, 'Vendedor'),
+  (CLIENTE, 'Cliente'),
+)
