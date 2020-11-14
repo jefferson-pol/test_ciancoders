@@ -15,12 +15,23 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
       data = request.data
+      print(data)
       usuario = User.objects.create(
         username=data["username"],
         email=data.get("email",""),
         first_name=data["first_name"],
         last_name=data["last_name"],
       )
+      if data.get("Perfil",False):
+        print("Hay Perfil en User")
+        Perfil.objects.create(
+          foto=data["Perfil"].get("foto",None),
+          telefono=data["Perfil"]["telefono"],
+          direccion=data["Perfil"]["direccion"],
+          tipo=data["Perfil"]["tipo"],
+          usuario=usuario
+        )
+        print("Perfil Creado")
       usuario.set_password(data["password"])
       usuario.save()
       serializer = UserListSerializer(usuario)
@@ -38,6 +49,14 @@ class UserViewSet(viewsets.ModelViewSet):
       usuario.first_name = data["first_name"]
       usuario.last_name = data["last_name"]
       usuario.save()
+      if data.get("Perfil",False):
+        perfil = usuario.Perfil
+        perfil.telefono = data["Perfil"]["telefono"]
+        perfil.direccion = data["Perfil"]["direccion"]
+        perfil.tipo = data["Perfil"]["tipo"]
+        if data["Perfil"].get("foto",False) is not False:
+          perfil.foto = data["Perfil"]["foto"]
+        perfil.save()
       if data.get("password",False):
         usuario = User.objects.get(username=data["username"])
         usuario.set_password(data["password"])

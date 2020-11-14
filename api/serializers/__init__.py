@@ -1,4 +1,4 @@
-from .perfil_serializer import PerfilSerializer
+from .perfil_serializer import PerfilSerializer, PerfilUserSerializer
 from .producto_serializer import ProductoSerializer
 from .user_serializer import *
 from .detalle_venta_serializer import DetalleVentaSerializer

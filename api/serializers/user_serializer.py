@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from api.serializers import PerfilSerializer
+from api.serializers import PerfilSerializer,PerfilUserSerializer
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-  Perfil = PerfilSerializer(required=False,read_only=True)
+  Perfil = PerfilUserSerializer(required=False)
   class Meta:
     model = User
     fields = (
@@ -30,7 +30,7 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
     )
 
 class UserUpdateSerializer(serializers.HyperlinkedModelSerializer):
-  Perfil = PerfilSerializer(required=False,read_only=True)
+  Perfil = PerfilUserSerializer(required=False)
   class Meta:
     model = User
     fields = (
