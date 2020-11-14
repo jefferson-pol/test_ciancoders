@@ -1,6 +1,9 @@
 #lib rest framework
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 #Models
 from django.contrib.auth.models import User
 from api.models import Perfil
@@ -23,7 +26,6 @@ class UserViewSet(viewsets.ModelViewSet):
         last_name=data["last_name"],
       )
       if data.get("Perfil",False):
-        print("Hay Perfil en User")
         Perfil.objects.create(
           foto=data["Perfil"].get("foto",None),
           telefono=data["Perfil"]["telefono"],
@@ -31,7 +33,6 @@ class UserViewSet(viewsets.ModelViewSet):
           tipo=data["Perfil"]["tipo"],
           usuario=usuario
         )
-        print("Perfil Creado")
       usuario.set_password(data["password"])
       usuario.save()
       serializer = UserListSerializer(usuario)
@@ -45,7 +46,6 @@ class UserViewSet(viewsets.ModelViewSet):
     if serializer.is_valid():
       data = request.data
       usuario = model
-      usuario.username = data["username"]
       usuario.first_name = data["first_name"]
       usuario.last_name = data["last_name"]
       usuario.save()
@@ -64,3 +64,17 @@ class UserViewSet(viewsets.ModelViewSet):
       return Response(serializer.data, status=status.HTTP_200_OK)
     else:
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+  @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+  def get_token(self, request, *args, **kwargs):
+    data = request.data
+    try:
+      usuario = User.objects.get(email=data.get("email"))
+      if usuario.check_password(data.get("password")):
+        token, created = Token.objects.get_or_create(user=usuario)
+        serializer = UserListSerializer(usuario)
+        return Response({'token':token.key, "me":serializer.data},status=status.HTTP_200_OK)
+      else:
+        return Response({'error':'Email o Contraseña incorrectos'},status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+      return Response({'error':'El usuario no existe'},status=status.HTTP_400_BAD_REQUEST)
