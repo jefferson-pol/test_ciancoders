@@ -15,3 +15,28 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
       'last_name',
       'Perfil'
     )
+
+class UserListSerializer(serializers.HyperlinkedModelSerializer):
+  Perfil = PerfilSerializer()
+  class Meta:
+    model = User
+    fields = (
+      'id',
+      'username',
+      'email',
+      'first_name',
+      'last_name',
+      'Perfil'
+    )
+
+class UserUpdateSerializer(serializers.HyperlinkedModelSerializer):
+  Perfil = PerfilSerializer(required=False,read_only=True)
+  class Meta:
+    model = User
+    fields = (
+      'id',
+      'username',
+      'first_name',
+      'last_name',
+      'Perfil'
+    )
