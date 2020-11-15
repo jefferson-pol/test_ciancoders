@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.decorators import action
 from api.models import Producto, DetalleVenta
 from api.serializers import ProductoSerializer
@@ -68,57 +68,72 @@ class ProductoViewSet(viewsets.ModelViewSet):
     except:
       return Response(status=status.HTTP_400_BAD_REQUEST)
 
-  @action(detail=False, methods=["get"])
+  @action(detail=False, methods=["get"],permission_classes=[IsAuthenticated])
   def catalogo_productos(self, request, *args, **kwargs):
     """Metodo que obtine los productos del catalogo del vendedor"""
     try:
-      if self.request.user.is_authenticated:
-        usuario = self.request.user
-        productos = Producto.objects.filter(vendedor=usuario)
-      else:
-        return Response({'error':'Inicie sesion para ver catalogo'},status=status.HTTP_400_BAD_REQUEST)
+      usuario = self.request.user
+      productos = Producto.objects.filter(vendedor=usuario)
       serializer = ProductoSerializer(productos,many=True)
       return Response(serializer.data, status=status.HTTP_200_OK)
     except:
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response({'error': 'Ocurrion un error en la petición'},status=status.HTTP_400_BAD_REQUEST)
 
-  @action(detail=False, methods=["get"])
+  @action(detail=False, methods=["get"],permission_classes=[IsAuthenticated])
   def ventas_globales(self, request, *args, **kwargs):
     """Metodo para reportes de ventas globales"""
     try:
       ventas = []
       total=0
-      if self.request.user.is_authenticated:
-        usuario = self.request.user
-        productos = Producto.objects.filter(vendedor=usuario)
-        print("filtramos productos")
-        for producto in productos:
-          _ventas = DetalleVenta.objects.filter(producto=producto)
-          cantidad = 0
-          _total = 0
-          for venta in _ventas:
-            subtotal = Decimal(venta.subtotal)
-            total += subtotal
-            _total += subtotal
-            cantidad += venta.cantidad
-            # ventas.append(
-            #   {
-            #     "fecha":venta.venta.fecha,
-            #     "venta":venta.venta.id,
-            #     "producto":venta.producto.nombre,
-            #     "cantidad":venta.cantidad,
-            #     "subtotal":subtotal
-            #   }
-            # )
-          if _total>0 and cantidad>0:
-            ventas.append({
-              "producto":producto.nombre,
-              "cantidad":cantidad,
-              "total":_total
-            })
-      else:
-        return Response({'error':'Inicie sesion para ver reporte'},status=status.HTTP_400_BAD_REQUEST)
+      usuario = self.request.user
+      productos = Producto.objects.filter(vendedor=usuario)
+      for producto in productos:
+        _ventas = DetalleVenta.objects.filter(producto=producto)
+        cantidad = 0
+        _total = 0
+        for venta in _ventas:
+          subtotal = Decimal(venta.subtotal)
+          total += subtotal
+          _total += subtotal
+          cantidad += venta.cantidad
+        if _total>0 and cantidad>0:
+          ventas.append({
+            "producto":producto.nombre,
+            "cantidad":cantidad,
+            "total":_total
+          })
       return Response({"ventas":ventas,"total":total},status=status.HTTP_200_OK)
     except:
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response({'error': 'Ocurrion un error en la petición'},status=status.HTTP_400_BAD_REQUEST)
 
+  @action(detail=False, methods=["get"],permission_classes=[IsAuthenticated])
+  def ventas_producto(self, request, *args, **kwargs):
+    """Metodo para reporte de ventas por producto"""
+    try:
+      ventas = []
+      total = 0
+      cantidad = 0
+      data = request.query_params
+      usuario = self.request.user
+      producto = Producto.objects.get(pk=data["producto"],vendedor=usuario)
+      nombre_producto = producto.nombre
+      detalles = DetalleVenta.objects.filter(producto=producto)
+      for venta in detalles:
+        subtotal = Decimal(venta.subtotal)
+        ventas.append({
+          "fecha":venta.venta.fecha,
+          "venta":venta.venta.id,
+          "cantidad":venta.cantidad,
+          "subtotal":subtotal
+        })
+        total += subtotal
+        cantidad +=venta.cantidad
+      respuesta ={
+        "producto":nombre_producto,
+        "total":total,
+        "cantidad":cantidad,
+        "ventas":ventas
+      }
+      return Response(respuesta, status=status.HTTP_200_OK)
+    except:
+      return Response({'error': 'Ocurrion un error en la petición'},status=status.HTTP_400_BAD_REQUEST)
