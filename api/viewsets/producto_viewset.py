@@ -2,9 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
-from api.models import Producto
+from api.models import Producto, DetalleVenta
 from api.serializers import ProductoSerializer
-
+from decimal import Decimal
 class ProductoViewSet(viewsets.ModelViewSet):
   queryset = Producto.objects.all()
   serializer_class = ProductoSerializer
@@ -79,6 +79,46 @@ class ProductoViewSet(viewsets.ModelViewSet):
         return Response({'error':'Inicie sesion para ver catalogo'},status=status.HTTP_400_BAD_REQUEST)
       serializer = ProductoSerializer(productos,many=True)
       return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+      return Response(status=status.HTTP_400_BAD_REQUEST)
+
+  @action(detail=False, methods=["get"])
+  def ventas_globales(self, request, *args, **kwargs):
+    """Metodo para reportes de ventas globales"""
+    try:
+      ventas = []
+      total=0
+      if self.request.user.is_authenticated:
+        usuario = self.request.user
+        productos = Producto.objects.filter(vendedor=usuario)
+        print("filtramos productos")
+        for producto in productos:
+          _ventas = DetalleVenta.objects.filter(producto=producto)
+          cantidad = 0
+          _total = 0
+          for venta in _ventas:
+            subtotal = Decimal(venta.subtotal)
+            total += subtotal
+            _total += subtotal
+            cantidad += venta.cantidad
+            # ventas.append(
+            #   {
+            #     "fecha":venta.venta.fecha,
+            #     "venta":venta.venta.id,
+            #     "producto":venta.producto.nombre,
+            #     "cantidad":venta.cantidad,
+            #     "subtotal":subtotal
+            #   }
+            # )
+          if _total>0 and cantidad>0:
+            ventas.append({
+              "producto":producto.nombre,
+              "cantidad":cantidad,
+              "total":_total
+            })
+      else:
+        return Response({'error':'Inicie sesion para ver reporte'},status=status.HTTP_400_BAD_REQUEST)
+      return Response({"ventas":ventas,"total":total},status=status.HTTP_200_OK)
     except:
       return Response(status=status.HTTP_400_BAD_REQUEST)
 
