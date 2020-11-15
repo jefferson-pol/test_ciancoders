@@ -14,6 +14,5 @@ class PerfilUserSerializer(serializers.ModelSerializer):
     fields = (
       'foto',
       'telefono',
-      'direccion',
-      'tipo'
+      'direccion'
     )

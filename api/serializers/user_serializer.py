@@ -17,7 +17,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     )
 
 class UserListSerializer(serializers.HyperlinkedModelSerializer):
-  Perfil = PerfilSerializer()
+  Perfil = PerfilUserSerializer()
   class Meta:
     model = User
     fields = (

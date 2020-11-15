@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from api.models import Perfil
 #Serializer
 from api.serializers import UserSerializer, UserListSerializer, UserUpdateSerializer
+from api.variables import VENDEDOR
 
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
@@ -31,7 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
           foto=data["Perfil"].get("foto",None),
           telefono=data["Perfil"]["telefono"],
           direccion=data["Perfil"]["direccion"],
-          tipo=data["Perfil"]["tipo"],
+          tipo=VENDEDOR,
           usuario=usuario
         )
       usuario.set_password(data["password"])
@@ -54,7 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
         perfil = usuario.Perfil
         perfil.telefono = data["Perfil"]["telefono"]
         perfil.direccion = data["Perfil"]["direccion"]
-        perfil.tipo = data["Perfil"]["tipo"]
+        perfil.tipo = usuario.Perfil.tipo
         if data["Perfil"].get("foto",False) is not False:
           perfil.foto = data["Perfil"]["foto"]
         perfil.save()
