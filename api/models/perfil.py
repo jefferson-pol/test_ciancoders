@@ -12,3 +12,6 @@ class Perfil(models.Model):
   telefono = models.CharField(max_length=8, blank=True, null=True)
   direccion = models.CharField(max_length=250, blank=True, null=True)
   tipo = models.SmallIntegerField(choices=TIPOS_USUARIO,default=VENDEDOR)
+
+  class Meta:
+    ordering = ['id']

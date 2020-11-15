@@ -14,3 +14,6 @@ class DetalleVenta(models.Model):
   )
   cantidad = models.PositiveIntegerField()
   subtotal = models.DecimalField(max_digits=8, decimal_places=2)
+
+  class Meta:
+    ordering = ['id']

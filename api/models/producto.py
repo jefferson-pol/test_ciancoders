@@ -10,3 +10,5 @@ class Producto(models.Model):
     related_name='vendedor',
     on_delete=models.CASCADE
   )
+  class Meta:
+    ordering = ['id']

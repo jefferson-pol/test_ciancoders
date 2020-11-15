@@ -10,3 +10,6 @@ class Venta(models.Model):
     on_delete=models.CASCADE,
     blank=True, null=True
   )
+
+  class Meta:
+    ordering = ['id']
