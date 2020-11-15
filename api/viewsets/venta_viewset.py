@@ -42,6 +42,8 @@ class VentaViewSet(viewsets.ModelViewSet):
             subtotal=subtotal
           )
         )
+        producto.cantidad -= cantidad
+        producto.save()
         total +=subtotal
       venta.total = total
       if data.get("user",False):
