@@ -137,3 +137,27 @@ class ProductoViewSet(viewsets.ModelViewSet):
       return Response(respuesta, status=status.HTTP_200_OK)
     except:
       return Response({'error': 'Ocurrion un error en la petición'},status=status.HTTP_400_BAD_REQUEST)
+
+  @action(detail=False, methods=["get"],permission_classes=[IsAuthenticated])
+  def promedio_precios(self, request, *args, **kwargs):
+    """Metodo para reportes de promedios de precios"""
+    try:
+      catalogo_productos = []
+      total = 0
+      cantidad = 0
+      usuario = self.request.user
+      productos = Producto.objects.filter(vendedor=usuario)
+      for producto in productos:
+        cantidad +=1
+        precio = Decimal(producto.precio)
+        catalogo_productos.append({
+          "id":producto.id,
+          "precio":precio,
+          "nombre":producto.nombre
+        })
+        total += precio
+      promedio = '{:.2f}'.format(float(total/cantidad))
+      promedio = Decimal(promedio)
+      return Response({"productos":catalogo_productos,"promedio":promedio},status=status.HTTP_200_OK)
+    except:
+      return Response({'error': 'Ocurrion un error en la petición'},status=status.HTTP_400_BAD_REQUEST)
