@@ -8,7 +8,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     model = User
     fields = (
       'id',
-      'username',
       'email',
       'password',
       'first_name',
@@ -22,7 +21,6 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
     model = User
     fields = (
       'id',
-      'username',
       'email',
       'first_name',
       'last_name',

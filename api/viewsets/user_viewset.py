@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
     if serializer.is_valid():
       data = request.data
       usuario = User.objects.create(
-        username=data["username"],
+        username=data["email"],
         email=data.get("email",""),
         first_name=data["first_name"],
         last_name=data["last_name"],
