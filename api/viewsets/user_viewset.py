@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+from api.permissions import UsuarioPermission
 #Models
 from django.contrib.auth.models import User
 from api.models import Perfil
@@ -13,12 +14,12 @@ from api.serializers import UserSerializer, UserListSerializer, UserUpdateSerial
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
   serializer_class = UserSerializer
+  permission_classes = [UsuarioPermission]
 
   def create(self, request, *args, **kwargs):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
       data = request.data
-      print(data)
       usuario = User.objects.create(
         username=data["username"],
         email=data.get("email",""),
