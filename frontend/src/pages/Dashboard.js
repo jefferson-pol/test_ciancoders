@@ -18,7 +18,7 @@ class Dashboard extends Component {
     this.loadPlaces();
   }
   loadPlaces() {
-   this.props.dispatch(actions.loadAll());
+  //  this.props.dispatch(actions.loadAll());
   }
   places() {
     return this.props.places.map((place, index) => {
@@ -40,7 +40,7 @@ class Dashboard extends Component {
               <FlatButton label="Favoritos" />
               <FlatButton label="Vistas Previas" />
             </div>
-            <div className="col-xs-12 col-md-10">{this.places()}</div>
+            {/* <div className="col-xs-12 col-md-10">{this.places()}</div> */}
           </div>
         </Container>
       </div>

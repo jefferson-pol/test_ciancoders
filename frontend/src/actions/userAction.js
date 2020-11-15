@@ -1,7 +1,7 @@
 import { LOG_IN, LOAD_USER, LOG_OUT } from '../constReducers/userConsts';
 
-export function login(jwt){
-  return { type: LOG_IN,jwt }
+export function login(token){
+  return { type: LOG_IN,token }
 }
 
 export function loadUser(user){

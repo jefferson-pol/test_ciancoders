@@ -7,16 +7,16 @@ import LogoutButton from "./LogoutButton";
 export default class MyAppBar extends Component {
 
   getName(){
-    if(this.props.user.name)
-      return this.props.user.name;
-    if(this.props.user.email)
-      return this.props.user.email.split('@')[0];
+    if(this.props.user.first_name)
+      return this.props.user.first_name;
+    if(this.props.user.username)
+      return this.props.user.username;
     return "";
   }
   title(){
     return (
       <span style={{'cursor':'pointer', 'textTransform': 'capitalize'}}>
-        {this.props.user.jwt ? 'Bienvenido '+this.getName(): 'Places'}
+        {this.props.user.token ? 'Bienvenido '+this.getName(): 'Store'}
       </span>
     );
   }
@@ -27,7 +27,7 @@ export default class MyAppBar extends Component {
         style={{ backgroundColor: indigo600 }}
         onTitleTouchTap={this.props.goHome}
         showMenuIconButton={false}
-        iconElementRight={ this.props.user.jwt ? <LogoutButton logout={this.props.logout}/>:<LoginButton />}
+        iconElementRight={ this.props.user.token ? <LogoutButton logout={this.props.logout}/>:<LoginButton />}
       />
     );
   }

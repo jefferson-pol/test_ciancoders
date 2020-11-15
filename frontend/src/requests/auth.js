@@ -1,7 +1,7 @@
 import config from '../config/secrets';
 
 function login(credentials){
-    return fetch(config.url+"/sessions",{
+    return fetch(config.url+"/user/get_token/",{
         method: 'POST',
         body: JSON.stringify(credentials),
         headers:{
@@ -14,7 +14,7 @@ function login(credentials){
 }
 
 function signUp(credentials){
-    return fetch(config.url+"/users",{
+    return fetch(config.url+"/user/",{
         method: 'POST',
         body: JSON.stringify(credentials),
         headers:{

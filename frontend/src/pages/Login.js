@@ -49,8 +49,8 @@ class Login extends Component {
   }
 
   auth(data){
-    this.props.dispatch(actions.login(data.jwt));
-    this.props.dispatch(actions.loadUser(data.user));
+    this.props.dispatch(actions.login(data.token));
+    this.props.dispatch(actions.loadUser(data.me));
     this.props.dispatch(push('/'));
   }
 
@@ -108,21 +108,6 @@ class Login extends Component {
                     "url(" +
                     process.env.PUBLIC_URL +
                     "/images/login-background.jpg)",
-                }}
-              ></div>
-            )}
-          ></Route>
-          <Route
-            path="/signup"
-            exact
-            render={() => (
-              <div
-                className="Login-background"
-                style={{
-                  backgroundImage:
-                    "url(" +
-                    process.env.PUBLIC_URL +
-                    "/images/signup-background.jpg)",
                 }}
               ></div>
             )}

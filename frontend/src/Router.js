@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import App from './App';
 import Dashboard from './pages/Dashboard';
 import Place from './pages/Place';
@@ -17,12 +18,12 @@ const userSignedIn = false;
 
 class Router extends Component {
   signedInRoutes() {
-    if (this.props.user.jwt) {
+    if (this.props.user.token) {
       return <Route path="/new" component={NewPlaces}></Route>;
     }
   }
   home() {
-    if (this.props.user.jwt) return Dashboard;
+    if (this.props.user.token) return Dashboard;
 
     return Home;
   }
@@ -34,7 +35,7 @@ class Router extends Component {
             <Route exact path="/" component={this.home()}></Route>
             <Route path="/lugares/:slug" component={Place}></Route>
             <Route path="/login" component={Login}></Route>
-            <Route path="/signup" component={Login}></Route>
+            <Route path="/signup" component={Signup}></Route>
             {this.signedInRoutes()}
           </Switch>
         </App>
