@@ -7,6 +7,8 @@ import { Route, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from '../actions/userAction';
 import { push } from 'connected-react-router';
+import Swal from 'sweetalert2';
+
 
 const NameField = (props) => (
   <TextField
@@ -23,44 +25,46 @@ const LoginActions= (props) =>(
     <RaisedButton onClick={props.requestAuth} label="Ingresar" secondary={true} />
   </div>
 )
-
-const SigUpActions = (props)=>(
-  <div>
-    <Link to="/login" style={{ marginRight: "1em" }}>Ya Tengo Cuenta </Link>
-    <RaisedButton onClick={props.createAccount} label="Crear Cuenta" secondary={true} />
-  </div>
-)
 class Login extends Component {
   constructor(props) {
     super(props);
-
-    console.log(props);
-
     this.requestAuth = this.requestAuth.bind(this);
-    this.createAccount = this.createAccount.bind(this);
     this.auth = this.auth.bind(this);
   }
+
   requestAuth() {
     const credentials = {
       email: this.refs.emailField.getValue(),
       password: this.refs.passwordField.getValue(),
     };
-    login(credentials).then(this.auth).catch(console.log);
+    if(credentials["email"] === "" || credentials["password"] === ""){
+      Swal.fire(
+        'Datos Inválidos',
+        'Llene todos los campos',
+        'error'
+      );
+    }else{
+      login(credentials).then(this.auth).catch(console.log);
+    }
   }
 
   auth(data){
-    this.props.dispatch(actions.login(data.token));
-    this.props.dispatch(actions.loadUser(data.me));
-    this.props.dispatch(push('/'));
-  }
-
-  createAccount() {
-    const credentials = {
-      email: this.refs.emailField.getValue(),
-      password: this.refs.passwordField.getValue(),
-      name: this.nameElement.getValue()
-    };
-    signUp(credentials).then(this.auth).catch(console.log);
+    if(data.token){
+      this.props.dispatch(actions.login(data.token));
+      this.props.dispatch(actions.loadUser(data.me));
+      Swal.fire(
+        'Enhorabuena',
+        'Sesión iniciada correctamente',
+        'success'
+      );
+      this.props.dispatch(push('/'));
+    }else{
+      Swal.fire(
+        'Datos Inválidos',
+        'Usuario o contraseña invalidos',
+        'error'
+      );
+    }
   }
 
   render() {
@@ -87,10 +91,6 @@ class Login extends Component {
                 <Route path="/login"
                   exact
                   render={() => (<LoginActions requestAuth={this.requestAuth} />)}>
-                </Route>
-                <Route path="/signup"
-                  exact
-                  render={() => (<SigUpActions createAccount={this.createAccount} />)}>
                 </Route>
               </div>
             </div>

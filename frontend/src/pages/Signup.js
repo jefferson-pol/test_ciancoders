@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { signUp,login } from "../requests/auth";
 import * as actions from "../actions/userAction";
 import { push } from "connected-react-router";
+import Swal from 'sweetalert2';
 
 class Signup extends Component {
   constructor(props) {
@@ -15,8 +16,10 @@ class Signup extends Component {
     this.auth = this.auth.bind(this);
   }
   createdAccount() {
+    let password = this.refs.password.getValue();
+    let confirmar = this.refs.passwordConfi.getValue()
     const data = {
-      password : this.refs.password.getValue(),
+      password : password,
       email : this.refs.email.getValue(),
       first_name : this.refs.first_name.getValue(),
       last_name : this.refs.last_name.getValue(),
@@ -25,21 +28,50 @@ class Signup extends Component {
         direccion : this.refs.direccion.getValue()
       }
     };
-    signUp(data)
-    .then(response =>{
-        let credenciales  = {
-          email : response.email,
-          password: data.password
-        }
-        login(credenciales).then(this.auth).catch(console.log);
+    if( data["password"] === "" || data["email"] === "" || data["first_name"] === "" || data["last_name"] ==="" || data["Perfil"]["direccion"] === "" || data["Perfil"]["telefono"] === ""){
+      Swal.fire(
+        'Datos Inválidos',
+        'Llene todos los campos',
+        'error'
+      );
+    }else{
+      if(password !== confirmar){
+        Swal.fire(
+          'Datos Inválidos',
+          'Las contraseñas no coinciden',
+          'error'
+        );
+      }else{
+        signUp(data)
+        .then(response =>{
+            let credenciales  = {
+              email : response.email,
+              password: data.password
+            }
+            login(credenciales).then(this.auth).catch(console.log);
+          }
+        ).catch(console.log);
       }
-    ).catch(console.log);
+    }
   }
 
   auth(data){
-    this.props.dispatch(actions.login(data.token));
-    this.props.dispatch(actions.loadUser(data.me));
-    this.props.dispatch(push('/'));
+    if(data.token){
+      this.props.dispatch(actions.login(data.token));
+      this.props.dispatch(actions.loadUser(data.me));
+      Swal.fire(
+        'Enhorabuena',
+        'Usuario creado correctamente',
+        'success'
+      );
+      this.props.dispatch(push('/'));
+    }else{
+      Swal.fire(
+        'Error',
+        'No se pudo crear el usario verifique los datos',
+        'error'
+      );
+    }
   }
 
   render() {
@@ -60,6 +92,12 @@ class Signup extends Component {
                 type="password"
                 className="textfield"
                 ref="password"
+              />
+              <TextField
+                floatingLabelText="Confirmar Contraseña"
+                type="password"
+                className="textfield"
+                ref="passwordConfi"
               />
               <TextField
                 floatingLabelText="Nombre"
