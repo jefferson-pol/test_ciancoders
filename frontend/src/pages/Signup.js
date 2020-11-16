@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 class Signup extends Component {
   constructor(props) {
     super(props);
+    this.state={uploading:false}
     this.createdAccount = this.createdAccount.bind(this);
     this.auth = this.auth.bind(this);
   }
@@ -42,6 +43,7 @@ class Signup extends Component {
           'error'
         );
       }else{
+        this.setState({uploading:true});
         signUp(data)
         .then(response =>{
             let credenciales  = {
@@ -56,6 +58,7 @@ class Signup extends Component {
   }
 
   auth(data){
+    this.setState({uploading:false});
     if(data.token){
       this.props.dispatch(actions.login(data.token));
       this.props.dispatch(actions.loadUser(data.me));
@@ -127,7 +130,7 @@ class Signup extends Component {
                 <Link to="/login" style={{ marginRight: "1em" }}>
                   Ya Tengo Cuenta
                 </Link>
-                <RaisedButton label="Crear Cuenta" secondary={true} onClick={this.createdAccount} />
+                <RaisedButton label="Crear Cuenta" secondary={true} onClick={this.createdAccount} disabled={this.state.uploading} />
               </div>
             </div>
           </Container>

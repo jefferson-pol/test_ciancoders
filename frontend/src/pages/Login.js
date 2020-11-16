@@ -9,25 +9,10 @@ import * as actions from '../actions/userAction';
 import { push } from 'connected-react-router';
 import Swal from 'sweetalert2';
 
-
-const NameField = (props) => (
-  <TextField
-    floatingLabelText="Nombre"
-    type="text"
-    className="textfield"
-    ref={props.nameRef}
-  />
-);
-
-const LoginActions= (props) =>(
-  <div>
-    <Link to="/signup" style={{ marginRight: "1em" }}>Crear Nueva Cuenta</Link>
-    <RaisedButton onClick={props.requestAuth} label="Ingresar" secondary={true} />
-  </div>
-)
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.state={uploading:false}
     this.requestAuth = this.requestAuth.bind(this);
     this.auth = this.auth.bind(this);
   }
@@ -44,11 +29,13 @@ class Login extends Component {
         'error'
       );
     }else{
+      this.setState({uploading:true});
       login(credentials).then(this.auth).catch(console.log);
     }
   }
 
   auth(data){
+    this.setState({uploading:false});
     if(data.token){
       this.props.dispatch(actions.login(data.token));
       this.props.dispatch(actions.loadUser(data.me));
@@ -86,12 +73,9 @@ class Login extends Component {
                 className="textfield"
                 ref="passwordField"
               />
-              <Route path="/signup" exact render={()=>(<NameField  nameRef={ (el)=> this.nameElement = el } />)}></Route>
               <div className="Login-actions">
-                <Route path="/login"
-                  exact
-                  render={() => (<LoginActions requestAuth={this.requestAuth} />)}>
-                </Route>
+                <Link to="/signup" style={{ marginRight: "1em" }}>Crear Nueva Cuenta</Link>
+                <RaisedButton onClick={this.requestAuth} label="Ingresar" secondary={true} disabled={this.state.uploading}/>
               </div>
             </div>
           </Container>

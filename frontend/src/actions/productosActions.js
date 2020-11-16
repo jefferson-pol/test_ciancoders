@@ -24,7 +24,11 @@ export function getCatalogoUsuario(){
       console.log(result);
       dispatch(getProductos(result));
       if(result[0] == '' || result[0] == null){
-        Swal.fire('No has creado productos para tu catalogo')
+        Swal.fire(
+          'Ok',
+          'No has creado productos para tu catalogo',
+          'success'
+        )
       }
     }).catch(e =>{
       Swal.fire(
