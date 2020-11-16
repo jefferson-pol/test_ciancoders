@@ -5,8 +5,7 @@ import { TextField, RaisedButton, Card } from 'material-ui';
 import Swal from 'sweetalert2';
 import Title from '../../components/Title';
 import Container from '../../components/Container';
-import * as requests from '../../requests/places';
-import Uploader from '../../components/uploader/Uploader';
+import * as requests from '../../requests/productos';
 
 const textStyles = {
   'width': '100%'
@@ -15,44 +14,44 @@ const textStyles = {
 class NewPlaces extends Component{
   constructor(props){
     super(props);
-
     this.state={uploading:false}
-
-    this.createPlace = this.createPlace.bind(this);
-    this.getFile = this.getFile.bind(this);
+    this.createProducto = this.createProducto.bind(this);
   }
 
-  createPlace(){
+  createProducto(){
     const data = {
-      title: this.refs.titleField.getValue(),
-      address: this.refs.addressField.getValue(),
-      description: this.refs.descriptionField.getValue()
+      nombre: this.refs.nombre.getValue(),
+      precio: parseFloat(this.refs.precio.getValue()),
+      cantidad: parseInt(this.refs.cantidad.getValue())
     }
 
-    if(data['title'] === "" || data['address'] === "" || data['description'] == ""){
+    if(data['nombre'] === "" || data['precio'] === "" || data['cantidad'] == ""){
       Swal.fire(
         'Datos Inválidos',
-        'Toda la información debe ser llenada',
+        'Llene todos los campos',
         'error'
       );
-      return ""
+      return null;
     }
-
-    if(this.state.avatar) data.avatar = this.state.avatar;
-    if(this.state.cover) data.cover = this.state.cover;
     this.setState({uploading:true});
-    requests.createPlace(data,this.props.user.jwt).then(data=>{
-      console.log(data);
+    requests.newProducto(data,this.props.user.token).then(data=>{
       this.setState({uploading:false});
-      this.props.dispatch(push('/lugares/'+data.slug));
+      if(data.nombre){
+        Swal.fire(
+          'Enhorabuena',
+          data.nombre+' fue creado',
+          'success'
+        );
+        this.props.dispatch(push('/'));
+      }else{
+        Swal.fire(
+          'Error',
+          'El producto no pudo ser creado',
+          'error'
+        );
+      }
     }).catch(console.log);
 
-  }
-  getFile(type,file){
-    let state={};
-    state[type]=file;
-    this.setState(state);
-    console.log(this.state);
   }
   render(){
     return(
@@ -64,32 +63,26 @@ class NewPlaces extends Component{
             </header>
             <div>
               <TextField
-                floatingLabelText="Nombre del negocio"
-                ref="titleField"
+                floatingLabelText="Nombre del producto"
+                ref="nombre"
                 style={textStyles}
               />
               <TextField
-                floatingLabelText="Dirección"
-                ref="addressField"
+                floatingLabelText="Precio Q"
+                ref="precio"
                 style={textStyles}
               />
               <TextField
-                floatingLabelText="Descripción del negocio"
-                ref="descriptionField"
+                floatingLabelText="Cantidad"
+                ref="cantidad"
                 multiLine={true}
                 style={textStyles}
               />
-              <div style={{'marginTop':'1em'}}>
-                <Uploader label="Subir Avatar" type="avatar" getFile={this.getFile}/>
-              </div>
-              <div style={{'marginTop':'1em'}}>
-                <Uploader label="Subir Cover" type="cover" getFile={this.getFile}/>
-              </div>
             </div>
             <div style={{'textAlign':'right','marginTop':'1em'}}>
               <RaisedButton
                 label='Guardar'
-                onClick={this.createPlace}
+                onClick={this.createProducto}
                 disabled={this.state.uploading}
                 secondary={true} />
             </div>

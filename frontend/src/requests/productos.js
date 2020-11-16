@@ -16,4 +16,18 @@ function getCataloProductos(token){
     return data.json();
   }).catch(console.log)
 }
-export { getProductos, getCataloProductos };
+function newProducto(data,token){
+  return fetch(config.url+"/producto/",{
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Token ' + token
+    }
+  }).then(data =>{
+    return data.json();
+  }).catch(console.log)
+}
+
+export { getProductos, getCataloProductos, newProducto };
