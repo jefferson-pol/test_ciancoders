@@ -8,21 +8,20 @@ import { connect } from 'react-redux';
 import Container from "../components/Container";
 import PlaceHorizontal from "../components/places/PlaceHorizontal";
 
-import { getPlaces } from "../requests/places";
-import * as actions from '../actions/placesAction';
+import * as actions from '../actions/productosActions';
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
-    this.loadPlaces();
+    this.loadCatalogo();
   }
-  loadPlaces() {
-  //  this.props.dispatch(actions.loadAll());
+  loadCatalogo() {
+    this.props.dispatch(actions.getCatalogoUsuario());
   }
-  places() {
-    return this.props.places.map((place, index) => {
-      return <PlaceHorizontal key={index} place={place} />;
+  productos() {
+    return this.props.productos.map((producto, index) => {
+      return <PlaceHorizontal key={index} producto={producto} />;
     });
   }
   render() {
@@ -36,11 +35,12 @@ class Dashboard extends Component {
         <Container>
           <div className="row">
             <div className="col-xs-12 col-md-2" style={{ textAlign: "left" }}>
-              <FlatButton label="Explorar" />
-              <FlatButton label="Favoritos" />
-              <FlatButton label="Vistas Previas" />
+              <FlatButton label="Catalogo" />
             </div>
-            {/* <div className="col-xs-12 col-md-10">{this.places()}</div> */}
+            <div className="col-xs-12 col-md-10">
+              <h1>Catalog de productos</h1>
+              {this.productos()}
+            </div>
           </div>
         </Container>
       </div>
@@ -50,7 +50,7 @@ class Dashboard extends Component {
 
 function mapStateToProps(state,ownProps){
   return{
-    places: state.places
+    productos: state.productos
   }
 }
 

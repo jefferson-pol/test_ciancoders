@@ -6,4 +6,14 @@ function getProductos(){
   }).catch(console.log)
 }
 
-export { getProductos };
+function getCataloProductos(token){
+  return fetch(config.url+"/producto/catalogo_productos/",{
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Token ' + token
+    }
+  }).then(data =>{
+    return data.json();
+  }).catch(console.log)
+}
+export { getProductos, getCataloProductos };
